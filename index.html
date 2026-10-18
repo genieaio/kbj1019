@@ -386,11 +386,13 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   <div id="adminLogin" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0B1020">
     <form id="loginForm" style="width:100%;max-width:420px;background:#fff;border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:16px">
       <h1 style="margin:0;font-size:28px;font-weight:800">관리자 로그인</h1>
+      <label for="a-email" style="font-weight:700">이메일</label>
+      <input id="a-email" class="inp" type="email" autocomplete="username" required>
       <label for="a-pw" style="font-weight:700">비밀번호</label>
-      <input id="a-pw" class="inp" type="password" autocomplete="current-password" aria-invalid="false">
-      <div class="err hidden" id="pwErr" style="margin:0">비밀번호가 올바르지 않습니다.</div>
-      <button type="submit" class="cta">로그인</button>
-      <div style="font-size:14px;color:#4A5373;line-height:1.5">데모용 보호입니다. 실제 운영 전 서버 인증 필요<br>임시 비밀번호는 코드 상단 상수입니다 <span class="tbd">[확인 필요]</span></div>
+      <input id="a-pw" class="inp" type="password" autocomplete="current-password" required aria-invalid="false">
+      <div class="err hidden" id="pwErr" style="margin:0"></div>
+      <button type="submit" class="cta" id="loginBtn">로그인</button>
+      <div style="font-size:14px;color:#4A5373;line-height:1.5">Supabase에 등록된 관리자 계정으로만 로그인할 수 있습니다.</div>
       <button type="button" class="line" id="toLanding">랜딩페이지로 돌아가기</button>
     </form>
   </div>
@@ -400,10 +402,12 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
         <h1 style="margin:0;font-size:28px;font-weight:800">수강 신청 관리</h1>
         <div style="display:flex;flex-wrap:wrap;gap:10px">
           <button class="line" id="toggleMask" type="button"></button>
+          <button class="line" id="refreshBtn" type="button">새로고침</button>
           <button class="line" id="csvBtn" type="button">CSV 다운로드</button>
           <button class="line" id="logoutBtn" type="button">로그아웃</button>
         </div>
       </div>
+      <div class="err hidden" id="adminMsg"></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px">
         <div class="kpi"><div class="l">전체 신청 수</div><div class="v" id="stTotal">0</div></div>
         <div class="kpi"><div class="l">오늘 신청 수</div><div class="v" id="stToday" style="color:#0E7FA3">0</div></div>
@@ -432,14 +436,23 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
   'use strict';
 
   // ===== 설정 =====
-  var ADMIN_PASSWORD = '1234'; // [확인 필요] 임시 비밀번호. 데모용 보호이며 실제 운영 전 서버 인증 필요
-  var STORAGE_KEY = 'ailm_applications_v1';
+  // Supabase > Project Settings > API 의 Project URL 과 anon(publishable) 키.
+  // anon 키는 브라우저에 공개되어도 되는 키이며, 실제 보안은 DB의 RLS 정책(supabase-setup.sql)이 담당합니다.
+  var SUPABASE_URL = 'https://ahyembexokuorgpazgks.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_r6mUoyKFXzvLGYKFKi7dzg_isUS2xNH';
+  var TABLE = 'registrations';
   var INTERESTS = ['보고서·문서 작성 자동화', '메일·일정·자료 정리 자동화', '엑셀·데이터 정리 자동화', '마케팅·SNS 콘텐츠 제작', '사업 기획·제안서 작성', '기타'];
+
+  var sb = null;
+  try {
+    if (window.supabase && SUPABASE_ANON_KEY.indexOf('__') !== 0) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch (e) { console.error(e); }
 
   // ===== 콘텐츠 =====
   var COMPARES = [
@@ -470,15 +483,6 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   function fmt(iso) { var d = new Date(iso); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
   function fmtPhone(s) { var d = String(s || '').replace(/\D/g, ''); return d.length === 11 ? d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7) : d.length === 10 ? d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6) : d; }
   function interestOptions(first) { return '<option value="">' + first + '</option>' + INTERESTS.map(function (o) { return '<option value="' + esc(o) + '">' + esc(o) + '</option>'; }).join(''); }
-
-  // ===== 저장소 (백엔드 교체 지점: 아래 함수만 서버 호출로 바꾸면 됩니다) =====
-  var store = {
-    list: function () { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { return []; } },
-    saveAll: function (a) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(a)); } catch (e) {} },
-    add: function (rec) { var a = store.list(); a.push(rec); store.saveAll(a); },
-    update: function (id, patch) { store.saveAll(store.list().map(function (x) { return x.id === id ? Object.assign({}, x, patch) : x; })); },
-    remove: function (id) { store.saveAll(store.list().filter(function (x) { return x.id !== id; })); }
-  };
 
   // ===== 정적 콘텐츠 렌더 =====
   $('compares').innerHTML = COMPARES.map(function (c) {
@@ -533,7 +537,7 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   function playVideo() { if (video && video.paused) { video.muted = true; var p = video.play(); if (p && p.catch) p.catch(function () {}); } }
   playVideo();
 
-  // ===== 수강 신청 폼 =====
+  // ===== 수강 신청 폼 (Supabase 저장) =====
   var fields = { name: $('f-name'), phone: $('f-phone'), email: $('f-email'), interest: $('f-int') };
   var submitting = false;
 
@@ -555,9 +559,8 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   }
   function validate() {
     var e = {};
-    if (!fields.name.value.trim()) e.name = '이름을 입력해 주세요.';
     var ph = fields.phone.value.replace(/\D/g, '');
-    if (!ph) e.phone = '연락처를 입력해 주세요.'; else if (!/^01\d{8,9}$/.test(ph)) e.phone = '숫자만 10~11자리로 입력해 주세요. (예: 01012345678)';
+    if (!/^01\d{8,9}$/.test(ph)) e.phone = '숫자만 10~11자리로 입력해 주세요. (예: 01012345678)';
     var em = fields.email.value.trim();
     if (!em) e.email = '이메일을 입력해 주세요.'; else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) e.email = '이메일 형식을 확인해 주세요.';
     if (!fields.interest.value) e.interest = '관심분야를 선택해 주세요.';
@@ -573,19 +576,30 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   $('f-msg').addEventListener('input', function () { $('msgLen').textContent = $('f-msg').value.length; });
   $('togglePrivacy').addEventListener('click', function () { $('privacyBox').classList.toggle('hidden'); });
 
-  function resetForm() {
+  function clearForm() {
     $('applyForm').reset();
     $('msgLen').textContent = '0';
     $('privacyBox').classList.add('hidden');
     setErrors({});
+  }
+  function resetForm() {
+    clearForm();
     $('doneBox').classList.add('hidden');
     $('applyForm').classList.remove('hidden');
   }
   $('resetForm').addEventListener('click', resetForm);
 
-  $('applyForm').addEventListener('submit', function (ev) {
+  $('applyForm').addEventListener('submit', async function (ev) {
     ev.preventDefault();
     if (submitting) return;
+
+    // 1) 이름·연락처 필수 확인
+    if (!fields.name.value.trim() || !fields.phone.value.trim()) {
+      alert('이름과 연락처를 입력해주세요');
+      (!fields.name.value.trim() ? fields.name : fields.phone).focus();
+      return;
+    }
+    // 2) 나머지 항목 확인
     var er = validate();
     setErrors(er);
     if (Object.keys(er).length) {
@@ -593,35 +607,55 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
       if (first && first.scrollIntoView) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
       return;
     }
+    if (!sb) { alert('신청 시스템 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.'); return; }
+
+    // 3) 전송
     submitting = true;
     var btn = $('submitBtn');
-    btn.disabled = true; btn.textContent = '신청서를 보내는 중입니다…';
-    setTimeout(function () {
-      var rec = {
-        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        createdAt: new Date().toISOString(),
-        name: fields.name.value.trim(), phone: fields.phone.value.replace(/\D/g, ''), email: fields.email.value.trim(),
-        interest: fields.interest.value, message: $('f-msg').value.trim(), status: '신규', memo: ''
-      };
-      // [연결 지점] 추후 구글폼/백엔드 전송: 여기서 fetch(...)로 rec를 보내고, 성공 시 아래 저장을 서버 응답으로 대체
-      store.add(rec);
-      submitting = false;
-      btn.disabled = false; btn.textContent = '수강 신청 완료하기';
-      $('applyForm').reset(); $('msgLen').textContent = '0';
+    btn.disabled = true; btn.textContent = '접수 중...';
+    var rec = {
+      name: fields.name.value.trim(),
+      phone: fields.phone.value.replace(/\D/g, ''),
+      email: fields.email.value.trim(),
+      interest: fields.interest.value,
+      message: $('f-msg').value.trim()
+    };
+    try {
+      var res = await sb.from(TABLE).insert(rec); // 비로그인은 insert 만 허용(RLS)
+      if (res.error) throw res.error;
+      alert('수강 신청이 정상적으로 완료되었습니다! 곧 안내 문자를 보내드립니다.');
+      clearForm();
       $('applyForm').classList.add('hidden');
       $('doneBox').classList.remove('hidden');
       scrollToId('apply');
-    }, 500);
+    } catch (err) {
+      console.error(err);
+      alert('접수 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      submitting = false;
+      btn.disabled = false; btn.textContent = '수강 신청 완료하기';
+    }
   });
 
-  // ===== 관리자 =====
-  var adm = { mask: true, delId: null };
+  // ===== 관리자 (Supabase Auth 로그인 + registrations 조회) =====
+  var adm = { mask: true, delId: null, rows: [] };
+
+  function setAdminMsg(t) { var el = $('adminMsg'); el.textContent = t || ''; el.classList.toggle('hidden', !t); }
+
+  async function loadRows() {
+    if (!sb) { setAdminMsg('Supabase 설정이 필요합니다.'); return; }
+    var r = await sb.from(TABLE).select('*').order('created_at', { ascending: false });
+    if (r.error) { setAdminMsg('데이터를 불러오지 못했습니다: ' + r.error.message); return; }
+    setAdminMsg('');
+    adm.rows = r.data || [];
+    renderAdmin();
+  }
 
   function renderAdmin() {
-    var apps = store.list(), today = new Date().toDateString();
-    var counts = {}; apps.forEach(function (a) { counts[a.interest] = (counts[a.interest] || 0) + 1; });
+    var apps = adm.rows, today = new Date().toDateString();
+    var counts = {}; apps.forEach(function (a) { counts[a.interest || '-'] = (counts[a.interest || '-'] || 0) + 1; });
     $('stTotal').textContent = apps.length;
-    $('stToday').textContent = apps.filter(function (a) { return new Date(a.createdAt).toDateString() === today; }).length;
+    $('stToday').textContent = apps.filter(function (a) { return new Date(a.created_at).toDateString() === today; }).length;
     $('stFresh').textContent = apps.filter(function (a) { return a.status === '신규'; }).length;
     $('stRatio').innerHTML = apps.length ? '<div style="display:flex;flex-direction:column;gap:6px">' + Object.keys(counts).map(function (k) {
       var pct = Math.round(counts[k] / apps.length * 100);
@@ -632,12 +666,12 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
     var fi = $('fInterest').value, fs = $('fStatus').value, asc = $('sortSel').value === 'asc';
     var list = apps.filter(function (a) {
       return (!fi || a.interest === fi) && (!fs || a.status === fs) &&
-        (!q || a.name.toLowerCase().indexOf(q) >= 0 || (qd && a.phone.replace(/\D/g, '').indexOf(qd) >= 0));
+        (!q || String(a.name).toLowerCase().indexOf(q) >= 0 || (qd && String(a.phone).replace(/\D/g, '').indexOf(qd) >= 0));
     });
-    list.sort(function (a, b) { return asc ? a.createdAt.localeCompare(b.createdAt) : b.createdAt.localeCompare(a.createdAt); });
+    list.sort(function (a, b) { return asc ? a.created_at.localeCompare(b.created_at) : b.created_at.localeCompare(a.created_at); });
 
     function mp(p) { var t = fmtPhone(p); return adm.mask ? t.replace(/-\d{3,4}-/, '-****-') : t; }
-    function me(m) { if (!adm.mask) return m; var i = m.indexOf('@'); return m.slice(0, 1) + '***' + m.slice(i); }
+    function me(m) { m = m || ''; if (!adm.mask || m.indexOf('@') < 0) return m; var i = m.indexOf('@'); return m.slice(0, 1) + '***' + m.slice(i); }
 
     $('toggleMask').textContent = adm.mask ? '개인정보 보이기' : '개인정보 가리기';
     var empty = $('emptyMsg');
@@ -647,72 +681,90 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
     var statusOpts = function (cur) { return ['신규', '상담중', '등록완료'].map(function (s) { return '<option value="' + s + '"' + (s === cur ? ' selected' : '') + '>' + s + '</option>'; }).join(''); };
     $('rows').innerHTML = list.map(function (a) {
       return '<div class="arow" data-id="' + esc(a.id) + '" style="padding:12px 0;border-bottom:1px solid #E1E5EF;font-size:16px;line-height:1.5">' +
-        '<div data-l="접수일시">' + fmt(a.createdAt) + '</div>' +
+        '<div data-l="접수일시">' + fmt(a.created_at) + '</div>' +
         '<div data-l="이름" style="font-weight:700">' + esc(a.name) + '</div>' +
         '<div data-l="연락처">' + esc(mp(a.phone)) + '</div>' +
         '<div data-l="이메일" style="overflow-wrap:anywhere">' + esc(me(a.email)) + '</div>' +
-        '<div data-l="관심분야">' + esc(a.interest) + '</div>' +
+        '<div data-l="관심분야">' + esc(a.interest || '-') + '</div>' +
         '<div data-l="남기실 말씀" class="full" style="overflow-wrap:anywhere;color:#4A5373">' + esc(a.message || '-') + '</div>' +
         '<div data-l="처리상태"><select class="inp js-status" aria-label="처리상태" style="font-weight:700">' + statusOpts(a.status) + '</select></div>' +
-        '<div data-l="관리 메모 (자동 저장)"><input class="inp js-memo" type="text" value="' + esc(a.memo || '') + '" placeholder="메모 입력" aria-label="관리 메모"></div>' +
+        '<div data-l="관리 메모 (자동 저장)"><input class="inp js-memo" type="text" maxlength="1000" value="' + esc(a.memo || '') + '" placeholder="메모 입력" aria-label="관리 메모"></div>' +
         '<div data-l="삭제"><button class="line js-del" type="button" style="min-height:44px;padding:0 14px;color:#C62F4B">삭제</button></div>' +
         '</div>';
     }).join('');
   }
 
-  $('rows').addEventListener('change', function (e) {
+  async function patchRow(id, patch) {
+    var r = await sb.from(TABLE).update(patch).eq('id', id);
+    if (r.error) { alert('저장하지 못했습니다: ' + r.error.message); return false; }
+    adm.rows = adm.rows.map(function (x) { return x.id === id ? Object.assign({}, x, patch) : x; });
+    return true;
+  }
+
+  $('rows').addEventListener('change', async function (e) {
     var row = e.target.closest('.arow'); if (!row) return;
     var id = row.getAttribute('data-id');
-    if (e.target.classList.contains('js-status')) { store.update(id, { status: e.target.value }); renderAdmin(); }
-    else if (e.target.classList.contains('js-memo')) { store.update(id, { memo: e.target.value }); }
+    if (e.target.classList.contains('js-status')) { if (await patchRow(id, { status: e.target.value })) renderAdmin(); }
+    else if (e.target.classList.contains('js-memo')) { await patchRow(id, { memo: e.target.value || null }); }
   });
   $('rows').addEventListener('click', function (e) {
     var b = e.target.closest('.js-del'); if (!b) return;
     var id = b.closest('.arow').getAttribute('data-id');
-    var a = store.list().filter(function (x) { return x.id === id; })[0];
+    var a = adm.rows.filter(function (x) { return x.id === id; })[0];
     adm.delId = id; $('delName').textContent = a ? a.name : ''; $('delModal').classList.remove('hidden');
   });
   $('cancelDel').addEventListener('click', function () { adm.delId = null; $('delModal').classList.add('hidden'); });
-  $('confirmDel').addEventListener('click', function () { store.remove(adm.delId); adm.delId = null; $('delModal').classList.add('hidden'); renderAdmin(); });
+  $('confirmDel').addEventListener('click', async function () {
+    var id = adm.delId; adm.delId = null; $('delModal').classList.add('hidden');
+    var r = await sb.from(TABLE).delete().eq('id', id);
+    if (r.error) { alert('삭제하지 못했습니다: ' + r.error.message); return; }
+    adm.rows = adm.rows.filter(function (x) { return x.id !== id; });
+    renderAdmin();
+  });
   ['qIn', 'fInterest', 'fStatus', 'sortSel'].forEach(function (id) { $(id).addEventListener(id === 'qIn' ? 'input' : 'change', renderAdmin); });
   $('toggleMask').addEventListener('click', function () { adm.mask = !adm.mask; renderAdmin(); });
+  $('refreshBtn').addEventListener('click', loadRows);
 
   $('csvBtn').addEventListener('click', function () {
     var cols = ['접수일시', '이름', '연락처', '이메일', '관심분야', '남기실 말씀', '처리상태', '관리 메모'];
     var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
-    var lines = [cols.map(q).join(',')].concat(store.list().map(function (x) {
-      return [fmt(x.createdAt), x.name, fmtPhone(x.phone), x.email, x.interest, x.message, x.status, x.memo].map(q).join(',');
+    var lines = [cols.map(q).join(',')].concat(adm.rows.map(function (x) {
+      return [fmt(x.created_at), x.name, fmtPhone(x.phone), x.email, x.interest, x.message, x.status, x.memo].map(q).join(',');
     }));
     var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'applications_' + new Date().toISOString().slice(0, 10) + '.csv';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'registrations_' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
 
-  $('loginForm').addEventListener('submit', function (e) {
+  $('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
-    var pw = $('a-pw');
-    if (pw.value === ADMIN_PASSWORD) {
-      try { sessionStorage.setItem('ailm_admin', '1'); } catch (x) {}
-      pw.value = ''; route();
-    } else { $('pwErr').classList.remove('hidden'); pw.setAttribute('aria-invalid', 'true'); }
+    var err = $('pwErr'), pw = $('a-pw'), btn = $('loginBtn');
+    err.classList.add('hidden');
+    if (!sb) { err.textContent = 'Supabase 설정이 필요합니다.'; err.classList.remove('hidden'); return; }
+    btn.disabled = true;
+    var r = await sb.auth.signInWithPassword({ email: $('a-email').value.trim(), password: pw.value });
+    btn.disabled = false;
+    if (r.error) { err.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.'; err.classList.remove('hidden'); pw.setAttribute('aria-invalid', 'true'); return; }
+    pw.value = ''; pw.setAttribute('aria-invalid', 'false');
+    route();
   });
   $('a-pw').addEventListener('input', function () { $('pwErr').classList.add('hidden'); $('a-pw').setAttribute('aria-invalid', 'false'); });
-  $('logoutBtn').addEventListener('click', function () { try { sessionStorage.removeItem('ailm_admin'); } catch (x) {} route(); });
+  $('logoutBtn').addEventListener('click', async function () { if (sb) await sb.auth.signOut(); adm.rows = []; route(); });
   $('toLanding').addEventListener('click', function () { location.hash = ''; });
 
   // ===== 라우팅 (#/admin) =====
-  function route() {
+  async function route() {
     var isAdmin = location.hash.indexOf('#/admin') === 0;
-    var authed = false; try { authed = sessionStorage.getItem('ailm_admin') === '1'; } catch (x) {}
     $('landing').classList.toggle('hidden', isAdmin);
     $('admin').classList.toggle('hidden', !isAdmin);
+    if (!isAdmin) { observe(); playVideo(); return; }
+    var authed = false;
+    if (sb) { try { var s = await sb.auth.getSession(); authed = !!(s.data && s.data.session); } catch (x) {} }
     $('adminLogin').classList.toggle('hidden', authed);
     $('adminMain').classList.toggle('hidden', !authed);
-    if (isAdmin && authed) renderAdmin();
-    if (!isAdmin) { observe(); playVideo(); }
+    if (authed) loadRows();
   }
   window.addEventListener('hashchange', function () { route(); window.scrollTo(0, 0); });
-  window.addEventListener('storage', function () { if (location.hash.indexOf('#/admin') === 0) route(); });
   route();
 })();
 </script>
