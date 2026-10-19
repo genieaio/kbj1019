@@ -120,6 +120,58 @@ h2.tt{margin:8px 0 12px;font-size:clamp(26px,4.4vw,44px);line-height:1.3;font-we
 .field b{font-size:17px;line-height:1.4}
 .inst-band{margin-top:24px;background:#0B1020;color:#fff;border-radius:20px;padding:clamp(20px,3.5vw,32px);font-size:clamp(18px,2.4vw,24px);font-weight:700;line-height:1.5;text-align:center;text-wrap:balance}
 .inst-band em{font-style:normal;color:#F5C16A}
+
+/* ===== 강사 소개 (포트폴리오 반영) ===== */
+.ins-profile{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(28px,5vw,72px);align-items:center}
+.ins-photo{position:relative;justify-self:center;width:100%;max-width:480px}
+.ins-photo img{display:block;width:100%;aspect-ratio:1254/1400;object-fit:cover;border-radius:28px;background:#fff;border:1px solid #E1E5EF;box-shadow:0 30px 60px -28px rgba(11,16,32,.35)}
+.ins-photo::before{content:"";position:absolute;inset:18px -18px -18px 18px;border-radius:28px;background:linear-gradient(135deg,#4CC9F0,#F5A524);opacity:.28;z-index:-1}
+.ins-info{display:flex;flex-direction:column;gap:16px;align-items:flex-start;min-width:0}
+.ins-name{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.ins-name b{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.ins-name span{font-size:15px;letter-spacing:.14em;font-weight:700;color:#0E7FA3}
+.ins-lead{margin:0;font-size:clamp(22px,3vw,32px);line-height:1.35;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.ins-lead em{font-style:normal;color:#0E7FA3}
+.ins-desc{margin:0;color:#4A5373}
+.ins-roles{margin:0;padding:0;list-style:none;display:grid;gap:8px;width:100%}
+.ins-roles li{display:flex;gap:10px;align-items:flex-start;font-weight:600;color:#2F3652;line-height:1.5}
+.ins-roles li::before{content:"";flex:none;width:8px;height:8px;margin-top:.6em;border-radius:50%;background:#F5A524}
+.ins-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:clamp(36px,5vw,56px)}
+.ins-stat{background:#0B1020;color:#fff;border-radius:18px;padding:22px 18px;text-align:center}
+.ins-stat b{display:block;font-size:clamp(26px,3.4vw,38px);font-weight:800;color:#F5C16A;line-height:1.2}
+.ins-stat span{display:block;margin-top:6px;font-size:14px;color:#D5DAEA;line-height:1.4}
+.ins-h{margin:clamp(44px,6vw,72px) 0 18px;font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.01em}
+.ins-h small{display:block;margin-top:4px;font-size:15px;font-weight:600;color:#4A5373;letter-spacing:0}
+.ins-career{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.ins-card{background:#fff;border:1px solid #E1E5EF;border-radius:18px;padding:20px 20px 18px;box-shadow:0 4px 16px rgba(11,16,32,.05)}
+.ins-card b{display:block;font-size:17px;line-height:1.4}
+.ins-card p{margin:6px 0 0;font-size:15px;color:#4A5373;line-height:1.55}
+.ins-card .tag{display:inline-block;margin-bottom:8px;padding:2px 10px;border-radius:999px;background:#E3F6FC;color:#0B5F7A;font-size:12px;font-weight:800;letter-spacing:.04em}
+.ins-certs{display:flex;flex-wrap:wrap;gap:8px}
+.ins-certs span{padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #C9D0E3;font-size:15px;font-weight:700;color:#2F3652}
+.ins-orgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.ins-org{background:#fff;border:1px solid #E1E5EF;border-top:4px solid #0E7FA3;border-radius:18px;padding:20px}
+.ins-org h4{margin:0 0 12px;font-size:16px;color:#0E7FA3;letter-spacing:.02em}
+.ins-org ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.ins-org li b{display:block;font-size:16px;line-height:1.4}
+.ins-org li span{display:block;font-size:14px;color:#4A5373;line-height:1.5}
+.ins-proj{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.ins-pc{background:linear-gradient(160deg,#141B33,#0B1020);color:#fff;border-radius:20px;padding:24px 22px;border:1px solid #2A3560}
+.ins-pc .tag{display:inline-block;margin-bottom:10px;padding:2px 10px;border-radius:999px;background:rgba(76,201,240,.15);border:1px solid #4CC9F0;color:#4CC9F0;font-size:12px;font-weight:800;letter-spacing:.06em}
+.ins-pc b{display:block;font-size:19px;line-height:1.4}
+.ins-pc p{margin:8px 0 0;font-size:15px;color:#D5DAEA;line-height:1.55}
+.ins-pc small{display:block;margin-top:10px;font-size:13px;color:#F5C16A;font-weight:700}
+.ins-books{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px}
+.ins-book{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #E1E5EF;border-radius:14px;padding:12px 14px}
+.ins-book i{flex:none;font-style:normal;padding:2px 8px;border-radius:8px;background:#FFF1C2;color:#7A3E00;font-size:12px;font-weight:800;margin-top:2px;white-space:nowrap}
+.ins-book b{font-size:15px;line-height:1.45;font-weight:700}
+.ins-cta{margin-top:clamp(36px,5vw,56px);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#E3F6FC,#fff);border:1px solid #4CC9F0;border-radius:22px;padding:clamp(22px,3.5vw,34px)}
+.ins-cta p{margin:0;font-size:clamp(18px,2.4vw,24px);font-weight:800;line-height:1.45;text-wrap:balance}
+.ins-contact{display:flex;flex-wrap:wrap;gap:10px 22px;font-weight:600}
+.ins-contact a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.4)}
+.ins-contact a:hover{color:#4CC9F0;border-color:#4CC9F0}
+@media(max-width:900px){.ins-profile{grid-template-columns:1fr}.ins-photo{max-width:420px}.ins-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.ins-photo::before{inset:12px -10px -12px 10px}.ins-card,.ins-org{padding:18px 16px}.ins-stat{padding:18px 12px}.ins-cta .cta{width:100%}}
 .photos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin-top:56px}
 .photos img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:20px}
 .rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
@@ -301,37 +353,95 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
 
 <section class="sec" id="instructor" data-screen-label="04 강사 소개" style="background:#F4F6FA">
   <div class="wrap">
-    <div data-rv class="inst-grid">
-      <img src="profile.png" alt="AI Content Academy 대표 윤진숙">
-      <div class="inst-info">
-        <div class="eyebrow" style="color:#0E7FA3">INSTRUCTOR</div>
-        <h2 class="tt" style="margin:0">AI를 쉽게 배우고, 바로 쓰게 하는 강사</h2>
+    <div class="eyebrow" data-rv style="color:#0E7FA3">INSTRUCTOR</div>
+    <div data-rv class="ins-profile" style="margin-top:14px">
+      <div class="ins-photo"><img src="profile.png" alt="AI Content Academy 대표 윤진숙"></div>
+      <div class="ins-info">
+        <div class="ins-name"><b>윤진숙</b><span>AI CONTENT ACADEMY</span></div>
+        <h2 class="ins-lead">배움을 창작으로,<br><em>내 작품이 되는 AI 교육</em></h2>
         <p class="inst-quote">“AI로 배우고, 창작하고, 세상과 연결합니다”</p>
-        <div style="font-size:clamp(20px,2.6vw,24px);font-weight:800">AI Content Academy 대표 윤진숙</div>
-        <div class="chips"><span class="chip">생성형 AI 강사</span><span class="chip">동화작가</span><span class="chip">미디어 리터러시 교육</span><span class="chip">AI 콘텐츠 아카데미</span></div>
-        <p class="inst-sum">생성형 AI와 콘텐츠로 세상을 잇는 교육 전문가</p>
-        <ul>
-          <li>現 AI Content Academy 대표 / AI융합강사 ㆍ동화작가</li>
-          <li>강사 경력 20년</li>
+        <p class="ins-desc">기능을 익히는 데서 한 걸음 더 나아가, 학습자가 자신의 결과물을 만들고 설명할 수 있도록 돕는 AI 융합교육 전문강사입니다.</p>
+        <ul class="ins-roles">
+          <li>AI 콘텐츠아카데미 대표 · AI융합강사 ㆍ동화작가</li>
+          <li>한국AI 전문가교육협회 부회장</li>
+          <li>(주)디지털콘텐츠그룹 지국장 · Canva 디지털콘텐츠협회 강사</li>
         </ul>
         <button class="cta" data-go="apply" type="button">윤진숙 강사에게 직접 배우기</button>
       </div>
     </div>
-    <div data-rv>
-      <h3 class="fields-title">전문 분야</h3>
-      <div class="fields">
-        <div class="field"><span class="n">1</span><b>생성형 AI 교육</b></div>
-        <div class="field"><span class="n">2</span><b>동화 창작</b></div>
-        <div class="field"><span class="n">3</span><b>AI 콘텐츠 제작</b></div>
-        <div class="field"><span class="n">4</span><b>스마트폰·디지털 교육</b></div>
-        <div class="field"><span class="n">5</span><b>미디어 리터러시</b></div>
-        <div class="field"><span class="n">6</span><b>AI 콘텐츠 아카데미</b></div>
-      </div>
-      <div class="inst-band">AI를 쉽게 배우고 바로 활용하여 <em>실천형 교육 경험</em>을 만듭니다.</div>
+
+    <div data-rv class="ins-stats">
+      <div class="ins-stat"><b>20년</b><span>강사 경력</span></div>
+      <div class="ins-stat"><b>17권</b><span>출간 · 공저 도서</span></div>
+      <div class="ins-stat"><b>9개</b><span>AI·디지털 강의 분야</span></div>
+      <div class="ins-stat"><b>대학·공공·기업</b><span>연세대 · 삼성 E&amp;A · 기상청 등 출강</span></div>
     </div>
-    <div data-rv class="photos">
-      <img src="강의장면1.jpeg" alt="강의 현장 사진 1" loading="lazy">
-      <img src="강의장면2.jpeg" alt="강의 현장 사진 2" loading="lazy">
+
+    <h3 class="ins-h" data-rv>주요 경력<small>교육 현장과 콘텐츠 제작을 함께 해 온 이력입니다.</small></h3>
+    <div data-rv class="ins-career">
+      <div class="ins-card"><span class="tag">현재</span><b>AI 콘텐츠아카데미 대표</b><p>기관·대상별 맞춤 AI 교육, 결과물 중심 프로젝트 교육</p></div>
+      <div class="ins-card"><span class="tag">현재</span><b>한국AI 전문가교육협회 부회장</b><p>AI 융합 교육 및 교육 콘텐츠 활동</p></div>
+      <div class="ins-card"><span class="tag">현재</span><b>(주)디지털콘텐츠그룹 지국장</b><p>디지털 콘텐츠 제작, 강사역량강화 교육</p></div>
+      <div class="ins-card"><span class="tag">현재</span><b>Canva 디지털콘텐츠협회 강사</b><p>Canva PPT · 카드뉴스 · 교육자료 제작</p></div>
+      <div class="ins-card"><span class="tag">경력</span><b>한국생산성본부 디지털전환전문강사</b><p>디지털 전환, 디지털 역량 강화 교육</p></div>
+      <div class="ins-card"><span class="tag">2010–2025</span><b>특성화고등학교 산학겸임교사</b><p>전자상거래실무 교육</p></div>
+    </div>
+
+    <h3 class="ins-h" data-rv>자격사항</h3>
+    <div data-rv class="ins-certs">
+      <span>AI 챗GPT 전문지도사</span><span>AI 활용 전문가 1급</span><span>AI 출판콘텐츠 작가</span><span>AI 아트지도사</span><span>AI 디지털아트작가</span><span>Canva 디지털콘텐츠강사 1급·2급</span><span>디지털융합크리에이터 전문지도사</span>
+    </div>
+
+    <h3 class="ins-h" data-rv>함께한 기관<small>공공기관·기업·대학·도서관·복지관에서 대상별 맞춤 실습 교육을 진행했습니다.</small></h3>
+    <div data-rv class="ins-orgs">
+      <div class="ins-org"><h4>대학교 · 교육기관</h4><ul>
+        <li><b>연세대학교</b><span>교수·연구원 ChatGPT AI 활용 교육</span></li>
+        <li><b>아주대학교</b><span>Canva PPT · AI 영상 활용 교육</span></li>
+        <li><b>대림대학교</b><span>모바일인터넷과 전자상거래실무 교육</span></li>
+        <li><b>성균관대학교</b><span>디지털기기 교육앱 개발 교육자문·심사</span></li></ul></div>
+      <div class="ins-org"><h4>공공기관 · 기업</h4><ul>
+        <li><b>삼성 E&amp;A</b><span>직원연수 · 생애설계 · AI 디지털 역량 교육</span></li>
+        <li><b>기상청</b><span>신입사원 디지털리터러시·스마트워크 교육</span></li>
+        <li><b>사학연금</b><span>AI 활용 · 스마트폰 콘텐츠 제작 교육</span></li>
+        <li><b>서울시</b><span>해외인재 대학생 직무 문서·엑셀 교육</span></li></ul></div>
+      <div class="ins-org"><h4>도서관 · 지역 교육</h4><ul>
+        <li><b>수원창룡도서관</b><span>8주 AI 창작 프로젝트 · 작품 전시</span></li>
+        <li><b>등빛도서관</b><span>ChatGPT · 생성형 AI 활용 교육</span></li>
+        <li><b>창신소담도서관</b><span>스마트폰 · 생활 디지털 활용 교육</span></li>
+        <li><b>고양시여성인력개발센터</b><span>SNS 홍보 · 디지털 코칭 · 콘텐츠 교육</span></li></ul></div>
+    </div>
+
+    <h3 class="ins-h" data-rv>수업에서 시작해, 작품으로 남습니다</h3>
+    <div data-rv class="ins-proj">
+      <div class="ins-pc"><span class="tag">AI ART · 8-WEEK PROJECT</span><b>수원창룡도서관 · 8주 창작에서 전시까지</b><p>AI로 글과 이미지를 만들고 자신의 작품을 완성했습니다. 전시를 통해 배움의 결과를 지역사회와 함께 나눴습니다.</p><small>2026년 5–6월 교육 · 7월 작품 전시</small></div>
+      <div class="ins-pc"><span class="tag">AI MUSIC</span><b>BS 필하모닉오케스트라단 · AI 작곡 교육</b><p>연주회를 위한 Suno AI 작곡 교육으로 음악 아이디어를 구체화하고 창작에 활용했습니다.</p><small>음악 콘텐츠 · 공연 연계 교육</small></div>
+      <div class="ins-pc"><span class="tag">AI WORKSHOP</span><b>사학연금 · AI 활용·콘텐츠 제작</b><p>교직원 등을 대상으로 스마트폰 중심의 AI 활용과 이미지·캐릭터 이모티콘 등 친숙한 콘텐츠 제작을 진행했습니다.</p><small>대상별 눈높이 · 실습 중심</small></div>
+    </div>
+
+    <h3 class="ins-h" data-rv>출간도서 · 공저<small>AI 아트와 그림동화, 시화집에서 실무 교육서까지.</small></h3>
+    <div data-rv class="ins-books">
+      <div class="ins-book"><i>AI 활용서</i><b>누구나 쉽게 따라하는 AI 챗GPT</b></div>
+      <div class="ins-book"><i>시화집</i><b>괜찮아질 때까지 곁에 있을게</b></div>
+      <div class="ins-book"><i>시화집</i><b>문득 마음이 머문 자리</b></div>
+      <div class="ins-book"><i>AI 아트</i><b>Whispers of the Soul</b></div>
+      <div class="ins-book"><i>아트집</i><b>쉼의 온도</b></div>
+      <div class="ins-book"><i>그림동화</i><b>별빛 미술관의 비밀</b></div>
+      <div class="ins-book"><i>그림동화</i><b>나나와 웃는 유령 봉봉</b></div>
+      <div class="ins-book"><i>그림동화</i><b>토토야, 어디 있어?</b></div>
+      <div class="ins-book"><i>컬러링북</i><b>마법의 숲속 동물들</b></div>
+      <div class="ins-book"><i>컬러링북</i><b>꿈꾸는 동물나라 컬러링북</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>스마트폰 활용 교육 강사들의 바이블 2</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>스마트폰 기본과 활용 즐거운 스마트폰 교실</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>스마트폰 활용 교육 강사들의 바이블</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>업무 성과가 달라지는 스마트워크 꿀팁</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>스마트폰 전문강사 윤진숙과 함께하는 즐거운 스마트폰 교실</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>누구나 쉽게 따라하는 스마트폰 이미지 편집 &amp; 키네마스터</b></div>
+      <div class="ins-book"><i>교육·실무</i><b>1인 미디어 영상 제작 유튜브 크리에이터 노하우</b></div>
+    </div>
+
+    <div data-rv class="ins-cta">
+      <p>코딩을 몰라도, AI 에이전트를 내 업무에 쓰는 법을<br>윤진숙 강사와 5주 동안 직접 만들어 보세요.</p>
+      <button class="cta" data-go="apply" type="button">5주 과정 수강 신청하기</button>
     </div>
   </div>
 </section>
@@ -394,7 +504,7 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
       <div>궁금한 점은 카카오톡 오픈채팅방에서 편하게 물어보세요</div>
       <a class="cta sm kakao-link" href="https://open.kakao.com/me/snsrang" target="_blank" rel="noopener">오픈채팅 입장하기</a>
     </div>
-    <div>운영시간 평일 10:00~18:00 (점심 12:00~13:00)</div>
+    <div class="ins-contact"><span>문의</span><a href="tel:01051293531">010-5129-3531</a><a href="mailto:snsrang@gmail.com">snsrang@gmail.com</a><a href="https://blog.naver.com/webchin9" target="_blank" rel="noopener">네이버 블로그</a><a href="https://www.instagram.com/sns.genie/" target="_blank" rel="noopener">인스타그램</a></div>
     <div class="f-links"><span>개인정보처리방침</span><span>이용약관</span><span>환불 규정</span><a href="#/admin" style="color:#8A93B2;text-decoration:none">관리자</a></div>
     <div style="color:#8A93B2;padding-bottom:72px">© 2026 AI Content Academy. All rights reserved.</div>
   </div>
