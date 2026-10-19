@@ -164,6 +164,10 @@ h2.tt{margin:8px 0 12px;font-size:clamp(26px,4.4vw,44px);line-height:1.3;font-we
 .ins-org ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
 .ins-org li b{display:block;font-size:16px;line-height:1.4}
 .ins-org li span{display:block;font-size:14px;color:#5A5073;line-height:1.5}
+.ins-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;background:none;border:none;padding:0;cursor:pointer;color:#1B1236;font-family:inherit;text-align:left}
+.ins-toggle-icon{flex:none;transition:transform .25s ease}
+.ins-toggle[aria-expanded="true"] .ins-toggle-icon{transform:rotate(180deg)}
+.ins-toggle:hover .ins-toggle-icon circle{fill:#E6E0F0}
 .ins-proj{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
 .ins-pc{background:linear-gradient(160deg,#261A4D,#1B1236);color:#fff;border-radius:20px;padding:24px 22px;border:1px solid #3F2D78}
 .ins-pc .tag{display:inline-block;margin-bottom:10px;padding:2px 10px;border-radius:999px;background:rgba(76,201,240,.15);border:1px solid #4CC9F0;color:#4CC9F0;font-size:12px;font-weight:800;letter-spacing:.06em}
@@ -227,7 +231,33 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   .cta.sm{width:auto}
 }
 @media(max-width:720px){
-  body{font-size:16px;line-height:1.7}
+  body{font-size:18px;line-height:1.75}
+  /* 가독성 개선: 모바일 전용 폰트 확대 (PC는 영향 없음) */
+  .cmp-no{font-size:16px}
+  .cmp-k{font-size:17px}
+  .cmp-t small{font-size:16px}
+  .chip{font-size:16px}
+  .field .n{font-size:16px}
+  .field b{font-size:18px}
+  .ins-name span{font-size:16px}
+  .ins-stat span{font-size:15px}
+  .ins-h small{font-size:16px}
+  .ins-card b{font-size:18px}
+  .ins-card p{font-size:16px}
+  .ins-card .tag{font-size:13px}
+  .ins-certs span{font-size:16px}
+  .ins-cert li{font-size:16px}
+  .ins-gallery figcaption{font-size:16px}
+  .ins-org h4{font-size:17px}
+  .ins-org li b{font-size:17px}
+  .ins-org li span{font-size:15px}
+  .ins-pc b{font-size:20px}
+  .ins-pc p{font-size:16px}
+  .ins-pc small{font-size:14px}
+  .ins-pc .tag{font-size:13px}
+  .ins-book b{font-size:16px}
+  .ins-book i{font-size:13px}
+  footer .wrap{font-size:17px}
   .wrap{padding:0 20px}
   .nav,.nav-in{height:64px}
   .brand img{width:38px;height:38px}
@@ -237,18 +267,18 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   .ghost{font-size:17px;min-height:54px}
   .hero .wrap{padding-top:92px;padding-bottom:96px}
   .hero-box{gap:18px}
-  .badge{font-size:14px;padding:5px 12px}
+  .badge{font-size:16px;padding:5px 12px}
   .hero .lead{font-size:18px}
-  .hero .sub{font-size:16px}
-  .facts{font-size:16px;flex-direction:column;gap:6px}
-  .hero .promo{font-size:15px}
+  .hero .sub{font-size:17px}
+  .facts{font-size:17px;flex-direction:column;gap:6px}
+  .hero .promo{font-size:16px}
   .hero-btns>*{flex:1 1 100%}
   .scrolldown{display:none}
-  .eyebrow{font-size:13px}
+  .eyebrow{font-size:15px}
   .cmp-card{padding:14px;border-radius:16px}
   .cmp-title{font-size:18px}
   .cmp-b,.cmp-a{padding:18px}
-  .cmp-b p,.cmp-a p{font-size:16px}
+  .cmp-b p,.cmp-a p{font-size:17px}
   .cmp-t{font-size:24px}
   .feat{padding:22px}
   .feat h3{font-size:19px}
@@ -268,7 +298,7 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   .apply-info{padding:14px 16px;font-size:16px}
   .done h3{font-size:24px}
   .f-kakao{padding:16px 18px}
-  .f-kakao div{font-size:16px}
+  .f-kakao div{font-size:17px}
   .f-kakao .cta{width:100%}
   .arow{grid-template-columns:1fr}
   .kpi .v{font-size:32px}
@@ -413,8 +443,8 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
     <div data-rv class="ins-certs ins-field-chips">
       <span>생성형AI활용</span><span>AI아트전</span><span>AI시화집출판</span><span>챗GPT전문지도사자격증</span><span>스마트폰활용지도사자격증</span><span>미디어크리에이터</span><span>디지털리터러시</span><span>유튜브크리에이터</span>
     </div>
-    <h3 class="ins-h" data-rv style="margin-top:28px;font-size:clamp(19px,2.4vw,22px)">자격사항</h3>
-    <div data-rv class="ins-orgs">
+    <button type="button" class="ins-h ins-toggle" id="certsToggle" aria-expanded="false" aria-controls="certsBox" data-rv style="margin-top:28px;font-size:clamp(19px,2.4vw,22px)"><span>자격사항</span><svg class="ins-toggle-icon" width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle cx="15" cy="15" r="14" fill="#F0EBFA" stroke="#D4CBE6" stroke-width="1.5"/><path d="M10 13L15 18L20 13" stroke="#6333AE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="ins-orgs hidden" id="certsBox">
       <div class="ins-org ins-cert"><h4>AI · 콘텐츠</h4><ul><li>생성형 AI 영상콘텐츠 강사</li><li>생성형 AI 출판콘텐츠 작가</li><li>인공지능(AI) 활용 전문가 1급</li><li>AI 챗GPT 전문지도사</li><li>AI 아트지도사 2급</li><li>캔바디지털콘텐츠강사 1급</li><li>디지털융합크리에이터 전문지도사</li></ul></div>
       <div class="ins-org ins-cert"><h4>교육 · 디지털 활용</h4><ul><li>유튜브 크리에이터 전문지도사 1급 및 2급</li><li>스마트폰활용지도사 1급 및 2급</li><li>디지털범죄예방전문지도사 2급</li><li>SNS마케팅전문지도사 1급 및 2급</li><li>메타버스 콘텐츠 전문지도사</li><li>스마트워크전문지도사 1급 및 2급</li><li>평생교육사</li></ul></div>
       <div class="ins-org ins-cert"><h4>디자인 · IT · 전자상거래</h4><ul><li>웹디자인기능사 / 컴퓨터그래픽스 운용기능사</li><li>전자상거래관리사 / 전자출판기능사</li><li>CDC GOOGLE 프리젠테이션 / 문서 A급</li><li>Adobe GTQ AI / GTQ 1급 / ITQ 1급</li><li>Adobe 플래시 1급</li><li>삼성 e-Test Professionals 마스터</li><li>쇼핑몰플래너 1급</li></ul></div>
@@ -446,8 +476,8 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
       <div class="ins-pc"><span class="tag">AI WORKSHOP</span><b>서울센터, 대전센터 · AI 활용</b><p>교직원 등을 대상으로 스마트폰 중심의 AI 활용과 이미지·캐릭터 이모티콘 등 친숙한 콘텐츠 제작을 진행했습니다.</p><small>대상별 눈높이 · 실습 중심</small></div>
     </div>
 
-    <h3 class="ins-h" data-rv>출간도서 · 공저<small>AI 아트와 그림동화, 시화집에서 실무 교육서까지.</small></h3>
-    <div data-rv class="ins-books">
+    <button type="button" class="ins-h ins-toggle" id="booksToggle" aria-expanded="false" aria-controls="booksBox" data-rv><span>출간도서 · 공저<small>AI 아트와 그림동화, 시화집에서 실무 교육서까지.</small></span><svg class="ins-toggle-icon" width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle cx="15" cy="15" r="14" fill="#F0EBFA" stroke="#D4CBE6" stroke-width="1.5"/><path d="M10 13L15 18L20 13" stroke="#6333AE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="ins-books hidden" id="booksBox">
       <div class="ins-book"><i>AI 활용서</i><b>누구나 쉽게 따라하는 AI 챗GPT</b></div>
       <div class="ins-book"><i>시화집</i><b>괜찮아질 때까지 곁에 있을게</b></div>
       <div class="ins-book"><i>시화집</i><b>문득 마음이 머문 자리</b></div>
@@ -738,6 +768,14 @@ footer .wrap{display:flex;flex-direction:column;gap:28px;font-size:16px}
   $('f-agree').addEventListener('change', function () { clearError('agree'); });
   $('f-msg').addEventListener('input', function () { $('msgLen').textContent = $('f-msg').value.length; });
   $('togglePrivacy').addEventListener('click', function () { $('privacyBox').classList.toggle('hidden'); });
+  $('certsToggle').addEventListener('click', function () {
+    var open = $('certsBox').classList.toggle('hidden') === false;
+    $('certsToggle').setAttribute('aria-expanded', String(open));
+  });
+  $('booksToggle').addEventListener('click', function () {
+    var open = $('booksBox').classList.toggle('hidden') === false;
+    $('booksToggle').setAttribute('aria-expanded', String(open));
+  });
 
   function clearForm() {
     $('applyForm').reset();
